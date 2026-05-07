@@ -1,5 +1,6 @@
-FROM nikolaik/python-nodejs:python3.11-nodejs22
+FROM nikolaik/python-nodejs:python3.10-nodejs20
 
+# System updates
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg aria2 git && \
     apt-get clean && \
@@ -8,8 +9,10 @@ RUN apt-get update && \
 WORKDIR /app
 COPY . /app/
 
-# Pip upgrade aur direct dependency install
+# Pip ko upgrade karna aur dependencies install karna
+# Isse "Do you want to upgrade (y/n)" wala jhamela khatam ho jayega
 RUN python -m pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -U -r requirements.txt || pip install --no-cache-dir .
+RUN pip install --no-cache-dir .
 
+# Seedha bot ko start karein, kisi script (.sh) ke chakkar mein na padein
 CMD python3 -m VIPMUSIC
