@@ -24,8 +24,25 @@ from VIPMUSIC.utils.inline.help import private_help_panel
 ### Command
 HELP_COMMAND = get_command("HELP_COMMAND")
 
-COLUMN_SIZE = 4  # number of button height
-NUM_COLUMNS = 3  # number of button width
+COLUMN_SIZE = 4  # ɴᴜᴍʙᴇʀ ᴏꜰ ʙᴜᴛᴛᴏɴ ʜᴇɪɢʜᴛ
+NUM_COLUMNS = 3  # ɴᴜᴍʙᴇʀ ᴏꜰ ʙᴜᴛᴛᴏɴ ᴡɪᴅᴛʜ
+
+# ꜰᴏɴᴛ ᴄᴏɴᴠᴇʀᴛᴇʀ ᴍᴀᴘ
+NORMAL_TO_SMALL_CAPS = {
+    'a': 'ᴀ', 'b': 'ʙ', 'c': 'ᴄ', 'd': 'ᴅ', 'e': 'ᴇ', 'f': 'ꜰ',
+    'g': 'ɢ', 'h': 'ʜ', 'i': 'ɪ', 'j': 'ᴊ', 'k': 'ᴋ', 'l': 'ʟ',
+    'm': 'ᴍ', 'n': 'ɴ', 'o': 'ᴏ', 'p': 'ᴘ', 'q': 'ǫ', 'r': 'ʀ',
+    's': 's', 't': 'ᴛ', 'u': 'ᴜ', 'v': 'ᴠ', 'w': 'ᴡ', 'x': 'x',
+    'y': 'ʏ', 'z': 'ᴢ',
+    'A': 'ᴀ', 'B': 'ʙ', 'C': 'ᴄ', 'D': 'ᴅ', 'E': 'ᴇ', 'F': 'ꜰ',
+    'G': 'ɢ', 'H': 'ʜ', 'I': 'ɪ', 'J': 'ᴊ', 'K': 'ᴋ', 'L': 'ʟ',
+    'M': 'ᴍ', 'N': 'ɴ', 'O': 'ᴏ', 'P': 'ᴘ', 'Q': 'ǫ', 'R': 'ʀ',
+    'S': 's', 'T': 'ᴛ', 'U': 'ᴜ', 'V': 'ᴠ', 'W': 'ᴡ', 'X': 'x',
+    'Y': 'ʏ', 'Z': 'ᴢ',
+}
+
+def to_small_caps(text: str) -> str:
+    return ''.join(NORMAL_TO_SMALL_CAPS.get(c, c) for c in text)
 
 
 class EqInlineKeyboardButton(InlineKeyboardButton):
@@ -44,7 +61,7 @@ def paginate_modules(page_n, module_dict, prefix, chat=None, close: bool = False
         modules = sorted(
             [
                 EqInlineKeyboardButton(
-                    x.__MODULE__,
+                    to_small_caps(x.__MODULE__),
                     callback_data="{}_module({},{})".format(
                         prefix, x.__MODULE__.lower(), page_n
                     ),
@@ -56,7 +73,7 @@ def paginate_modules(page_n, module_dict, prefix, chat=None, close: bool = False
         modules = sorted(
             [
                 EqInlineKeyboardButton(
-                    x.__MODULE__,
+                    to_small_caps(x.__MODULE__),
                     callback_data="{}_module({},{},{})".format(
                         prefix, chat, x.__MODULE__.lower(), page_n
                     ),
@@ -104,7 +121,7 @@ def paginate_modules(page_n, module_dict, prefix, chat=None, close: bool = False
                     ),
                 ),
                 EqInlineKeyboardButton(
-                    "ᴄʟᴏsᴇ" if close else "Bᴀᴄᴋ",
+                    "ᴄʟᴏsᴇ" if close else "ʙᴀᴄᴋ",
                     callback_data="close" if close else "settingsback_helper",
                 ),
                 EqInlineKeyboardButton(
@@ -118,7 +135,7 @@ def paginate_modules(page_n, module_dict, prefix, chat=None, close: bool = False
         pairs.append(
             [
                 EqInlineKeyboardButton(
-                    "ᴄʟᴏsᴇ" if close else "Bᴀᴄᴋ",
+                    "ᴄʟᴏsᴇ" if close else "ʙᴀᴄᴋ",
                     callback_data="close" if close else "settingsback_helper",
                 ),
             ]
@@ -198,7 +215,7 @@ async def help_button(client, query):
         module = mod_match.group(1)
         prev_page_num = int(mod_match.group(2))
         text = (
-            f"<b><u>Hᴇʀᴇ Is Tʜᴇ Hᴇʟᴘ Fᴏʀ {HELPABLE[module].__MODULE__}:</u></b>\n"
+            f"<b><u>ʜᴇʀᴇ ɪs ᴛʜᴇ ʜᴇʟᴘ ꜰᴏʀ {HELPABLE[module].__MODULE__}:</u></b>\n"
             + HELPABLE[module].__HELP__
         )
 
