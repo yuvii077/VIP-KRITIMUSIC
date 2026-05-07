@@ -37,7 +37,8 @@ from VIPMUSIC.utils.database import (
 from VIPMUSIC.utils.decorators.language import LanguageStart
 from VIPMUSIC.utils.formatters import get_readable_time
 from VIPMUSIC.utils.functions import MARKDOWN, WELCOMEHELP
-from VIPMUSIC.utils.inline import alive_panel, private_panel, start_pannel
+# CHANGED: Removed alive_panel from imports as it doesn't exist
+from VIPMUSIC.utils.inline import private_panel, start_pannel
 
 from .help import paginate_modules
 
@@ -252,7 +253,8 @@ async def start_comm(client, message: Message, _):
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def testbot(client, message: Message, _):
-    out = alive_panel(_)
+    # CHANGED: Changed alive_panel to start_pannel
+    out = start_pannel(_)
     uptime = int(time.time() - _boot_)
     chat_id = message.chat.id
     if config.START_IMG_URL:
