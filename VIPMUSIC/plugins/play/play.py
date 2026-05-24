@@ -65,6 +65,10 @@ SPAM_THRESHOLD = 2
 async def play_commnd(
     client, message: Message, _, chat_id, video, channel, playmode, url, fplay
 ):
+    # ── AUDIO-ONLY LOCK ──────────────────────────────────────────────────────
+    # YouTube/Spotify/Apple/Resso ke liye hamesha audio stream karo.
+    # Sirf Telegram video file reply pe video mode allow hai.
+    video = None  # default force-audio; neeche sirf video_telegram ke liye True hoga
     userbot = await get_assistant(message.chat.id)
     userbot_id = userbot.id
     user_id = message.from_user.id
@@ -147,6 +151,7 @@ async def play_commnd(
             return await mystic.delete()
         return
     elif video_telegram:
+        video = True  # sirf Telegram video file ke liye video mode allow hai
         if not await is_video_allowed(message.chat.id):
             return await mystic.edit_text(_["play_3"])
         if message.reply_to_message.document:
@@ -546,6 +551,8 @@ async def play_music(client, CallbackQuery, _):
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     video = True if mode == "v" else None
+    # ── AUDIO-ONLY LOCK: YouTube stream pe video kabhi nahi ──────────────────
+    video = None  # hamesha audio
     ffplay = True if fplay == "f" else None
     try:
         await stream(
@@ -611,6 +618,8 @@ async def play_playlists_command(client, CallbackQuery, _):
     )
     videoid = lyrical.get(videoid)
     video = True if mode == "v" else None
+    # ── AUDIO-ONLY LOCK ───────────────────────────────────────────────────────
+    video = None  # hamesha audio stream
     ffplay = True if fplay == "f" else None
     spotify = True
     if ptype == "yt":
