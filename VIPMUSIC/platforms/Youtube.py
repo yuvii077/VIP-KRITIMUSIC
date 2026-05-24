@@ -76,10 +76,26 @@ async def api_get(endpoint: str, params: dict = {}) -> Optional[dict]:
     return None
 
 
-async def get_stream_url(video_id: str) -> Optional[str]:
-    data = await api_get("api/yt/stream", {"id": video_id})
-    if data and data.get("stream"):
-        return data["stream"]
+# ─── Stream URL Fetcher ───────────────────────────────────────────────────────
+async def get_stream_url(video_id: str, audio_only: bool = True) -> Optional[str]:
+    """
+    Fetch stream URL from API.
+    audio_only=True  → sends type=audio  (for music bots)
+    audio_only=False → sends type=video  (for video playback)
+    """
+    params = {"id": video_id, "type": "audio" if audio_only else "video"}
+    data = await api_get("api/yt/stream", params)
+
+    if not data:
+        return None
+
+    # Try common response keys
+    for key in ("stream", "audio", "url", "link"):
+        if data.get(key):
+            print(f"[STREAM] Got URL via key='{key}' for {video_id}")
+            return data[key]
+
+    print(f"[STREAM] No usable key in response: {data}")
     return None
 
 
@@ -127,11 +143,11 @@ class YouTubeAPI:
 
         print(f"[DETAILS] video_id={video_id}")
 
-        # Direct video ID
+        # Direct video ID path
         if video_id:
-            stream_data = await api_get("api/yt/stream", {"id": video_id})
+            stream_data = await api_get("api/yt/stream", {"id": video_id, "type": "audio"})
             print(f"[DETAILS] stream_data={stream_data}")
-            if stream_data and stream_data.get("stream"):
+            if stream_data and any(stream_data.get(k) for k in ("stream", "audio", "url", "link")):
                 title = stream_data.get("title") or "Unknown Title"
                 thumb = stream_data.get("thumb") or YOUTUBE_IMG_URL
                 search_res = await search_api(title, limit=1)
@@ -140,7 +156,7 @@ class YouTubeAPI:
                     duration_str, duration_sec = parse_duration(search_res[0].get("duration"))
                 return title, duration_str, duration_sec, thumb, video_id
 
-        # Text search
+        # Text search path
         print(f"[DETAILS] Trying search for: {query}")
         results = await search_api(query, limit=1)
         print(f"[DETAILS] search results={results}")
@@ -154,7 +170,7 @@ class YouTubeAPI:
             print(f"[DETAILS] Found: {title} | {vid_id} | {dur_str}")
             return title, dur_str, dur_sec, thumb, vid_id
 
-        # Last fallback
+        # Fallback: youtubesearchpython
         print(f"[DETAILS] Trying youtubesearchpython fallback")
         try:
             search = VideosSearch(query, limit=1)
@@ -194,6 +210,11 @@ class YouTubeAPI:
         videoid: Union[bool, str] = None,
         **kwargs,
     ) -> Tuple[Optional[str], bool]:
+        """
+        Returns (stream_url, is_direct_stream)
+        video=True  → fetch video stream
+        video=False / None → fetch audio-only stream (default for music bots)
+        """
         if videoid:
             video_id = get_clean_id(link) or link
         else:
@@ -203,13 +224,17 @@ class YouTubeAPI:
             print(f"[DOWNLOAD] Invalid video ID: {link}")
             return None, False
 
-        print(f"[DOWNLOAD] Fetching stream: {video_id}")
-        stream_url = await get_stream_url(video_id)
+        # Determine stream type
+        audio_only = not video  # music bot default = audio only
+
+        print(f"[DOWNLOAD] Fetching {'video' if video else 'audio'} stream: {video_id}")
+        stream_url = await get_stream_url(video_id, audio_only=audio_only)
+
         if stream_url:
             print(f"[DOWNLOAD] Stream OK: {video_id}")
             return stream_url, True
 
-        print(f"[DOWNLOAD] Failed: {video_id}")
+        print(f"[DOWNLOAD] Failed to get stream: {video_id}")
         return None, False
 
 
