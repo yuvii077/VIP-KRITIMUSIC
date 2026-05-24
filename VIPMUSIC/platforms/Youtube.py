@@ -67,12 +67,12 @@ async def api_get(endpoint: str, params: dict = {}) -> Optional[dict]:
         async with aiohttp.ClientSession(headers=HEADERS, timeout=timeout) as session:
             async with session.get(url, params=params) as resp:
                 text = await resp.text()
-                LOGGER(__name__).debug(f"[API] {url} | status={resp.status} | response={text[:300]}")
+                print(f"[API] {url} | status={resp.status} | response={text[:300]}")
                 if resp.status == 200:
                     import json
                     return json.loads(text)
     except Exception as e:
-        LOGGER(__name__).error(f"[API ERROR] {endpoint}: {e}")
+        print(f"[API ERROR] {endpoint}: {e}")
     return None
 
 
@@ -117,7 +117,7 @@ class YouTubeAPI:
         return None
 
     async def details(self, query: str, videoid: Union[bool, str] = None) -> Optional[Tuple]:
-        LOGGER(__name__).debug(f"[DETAILS] query={query} videoid={videoid}")
+        print(f"[DETAILS] query={query} videoid={videoid}")
         video_id = None
 
         if videoid:
@@ -125,12 +125,12 @@ class YouTubeAPI:
         elif await self.exists(query):
             video_id = get_clean_id(query)
 
-        LOGGER(__name__).debug(f"[DETAILS] video_id={video_id}")
+        print(f"[DETAILS] video_id={video_id}")
 
         # Direct video ID
         if video_id:
             stream_data = await api_get("api/yt/stream", {"id": video_id})
-            LOGGER(__name__).debug(f"[DETAILS] stream_data={stream_data}")
+            print(f"[DETAILS] stream_data={stream_data}")
             if stream_data and stream_data.get("stream"):
                 title = stream_data.get("title") or "Unknown Title"
                 thumb = stream_data.get("thumb") or YOUTUBE_IMG_URL
@@ -141,9 +141,9 @@ class YouTubeAPI:
                 return title, duration_str, duration_sec, thumb, video_id
 
         # Text search
-        LOGGER(__name__).debug(f"[DETAILS] Trying search for: {query}")
+        print(f"[DETAILS] Trying search for: {query}")
         results = await search_api(query, limit=1)
-        LOGGER(__name__).debug(f"[DETAILS] search results={results}")
+        print(f"[DETAILS] search results={results}")
 
         if results:
             v = results[0]
@@ -151,11 +151,11 @@ class YouTubeAPI:
             title = v.get("title", "Unknown Title")
             thumb = v.get("thumb") or YOUTUBE_IMG_URL
             dur_str, dur_sec = parse_duration(v.get("duration", "0:00"))
-            LOGGER(__name__).debug(f"[DETAILS] Found: {title} | {vid_id} | {dur_str}")
+            print(f"[DETAILS] Found: {title} | {vid_id} | {dur_str}")
             return title, dur_str, dur_sec, thumb, vid_id
 
         # Last fallback
-        LOGGER(__name__).debug(f"[DETAILS] Trying youtubesearchpython fallback")
+        print(f"[DETAILS] Trying youtubesearchpython fallback")
         try:
             search = VideosSearch(query, limit=1)
             resp = await search.next()
@@ -164,12 +164,12 @@ class YouTubeAPI:
                 v = res[0]
                 thumb = (v.get("thumbnails") or [{}])[0].get("url", YOUTUBE_IMG_URL).split("?")[0]
                 dur_str, dur_sec = parse_duration(v.get("duration", "0:00"))
-                LOGGER(__name__).debug(f"[DETAILS] Fallback found: {v.get('title')} | {v.get('id')}")
+                print(f"[DETAILS] Fallback found: {v.get('title')} | {v.get('id')}")
                 return v.get("title", "Unknown"), dur_str, dur_sec, thumb, v.get("id", "")
         except Exception as e:
-            LOGGER(__name__).error(f"[DETAILS] Fallback error: {e}")
+            print(f"[DETAILS] Fallback error: {e}")
 
-        LOGGER(__name__).warning("[DETAILS] All methods failed!")
+        print("[DETAILS] All methods failed!")
         return None
 
     async def track(self, query: str, videoid: Union[bool, str] = None):
@@ -194,25 +194,22 @@ class YouTubeAPI:
         videoid: Union[bool, str] = None,
         **kwargs,
     ) -> Tuple[Optional[str], bool]:
-        """
-        Koi file download nahi hoti.
-        Seedha stream URL return karta hai — direct play ke liye.
-        Returns: (stream_url, True) on success, (None, False) on failure.
-        """
-        video_id = get_clean_id(link) if not videoid else (get_clean_id(link) or link)
+        if videoid:
+            video_id = get_clean_id(link) or link
+        else:
+            video_id = get_clean_id(link)
 
         if not video_id:
-            LOGGER(__name__).warning(f"[STREAM] Invalid video ID: {link}")
+            print(f"[DOWNLOAD] Invalid video ID: {link}")
             return None, False
 
-        LOGGER(__name__).info(f"[STREAM] Fetching direct stream URL: {video_id}")
+        print(f"[DOWNLOAD] Fetching stream: {video_id}")
         stream_url = await get_stream_url(video_id)
-
         if stream_url:
-            LOGGER(__name__).info(f"[STREAM] Stream URL ready: {video_id}")
+            print(f"[DOWNLOAD] Stream OK: {video_id}")
             return stream_url, True
 
-        LOGGER(__name__).warning(f"[STREAM] Stream URL not found: {video_id}")
+        print(f"[DOWNLOAD] Failed: {video_id}")
         return None, False
 
 
