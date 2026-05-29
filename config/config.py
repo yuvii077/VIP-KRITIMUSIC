@@ -107,7 +107,7 @@ STRING5 = getenv("STRING_SESSION5", None)
 BASE_IMG = "https://envs.sh/BjZ.jpg"
 
 START_IMG_URL = getenv("START_IMG_URL", "https://envs.sh/BjZ.jpg")
-PING_IMG_URL = getenv("PING_IMG_URL", "https://envs.sh/BjZ.jpg")
+PING_IMG_URL = getenv("PING_IMG_URL", "https://files.catbox.moe/v8njvk.mp4")
 PLAYLIST_IMG_URL = getenv("PLAYLIST_IMG_URL", "https://envs.sh/BjZ.jpg")
 GLOBAL_IMG_URL = getenv("GLOBAL_IMG_URL", "https://envs.sh/BjZ.jpg")
 STATS_IMG_URL = getenv("STATS_IMG_URL", "https://envs.sh/BjZ.jpg")
