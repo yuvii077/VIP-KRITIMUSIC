@@ -71,7 +71,7 @@ MODULE_ICONS = {
     "help":      "❓",
 }
 
-DEFAULT_ICON = "🎵"
+DEFAULT_ICON = ""
 
 
 def to_small_caps(text: str) -> str:
