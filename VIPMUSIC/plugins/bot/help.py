@@ -23,7 +23,7 @@ from pyrogram.types import (
 )
 from pyrogram import types
 
-from strings import get_command, get_string, helpers
+from strings import get_command, get_string
 from VIPMUSIC import HELPABLE, app
 from VIPMUSIC.utils.database import get_lang, is_commanddelete_on
 from VIPMUSIC.utils.decorators.language import LanguageStart, languageCB
