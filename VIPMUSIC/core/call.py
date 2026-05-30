@@ -59,6 +59,7 @@ from VIPMUSIC.utils.thumbnails import gen_thumb
 active = []
 autoend = {}
 counter = {}
+joining_chats = set()  # Jin chats mein abhi join ho raha hai — on_left ignore karne ke liye
 AUTO_END_TIME = 1
 
 # Original song jaisi clean, enhanced audio quality ke liye FFmpeg filter chain
@@ -177,7 +178,6 @@ class Call(PyTgCalls):
         try:
             await assistant.leave_group_call(chat_id)
             await _clear_(chat_id)
-
         except:
             pass
 
@@ -444,6 +444,7 @@ class Call(PyTgCalls):
                     ffmpeg_parameters=ORIGINAL_AUDIO_FILTER,
                 )
         try:
+            joining_chats.add(chat_id)  # Join ke dauran on_left block karo
             await assistant.join_group_call(
                 chat_id,
                 stream,
@@ -452,6 +453,7 @@ class Call(PyTgCalls):
             try:
                 await self.join_assistant(original_chat_id, chat_id)
             except Exception as e:
+                joining_chats.discard(chat_id)
                 raise e
             try:
                 await assistant.join_group_call(
@@ -459,6 +461,7 @@ class Call(PyTgCalls):
                     stream,
                 )
             except Exception as e:
+                joining_chats.discard(chat_id)
                 raise AssistantErr(
                     "**ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛ ғᴏᴜɴᴅ**\n\nᴩʟᴇᴀsᴇ ᴍᴀᴋᴇ sᴜʀᴇ ʏᴏᴜ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ."
                 )
@@ -467,6 +470,7 @@ class Call(PyTgCalls):
                 try:
                     await self.join_assistant(original_chat_id, chat_id)
                 except Exception as e:
+                    joining_chats.discard(chat_id)
                     raise e
                 try:
                     await assistant.join_group_call(
@@ -474,18 +478,25 @@ class Call(PyTgCalls):
                         stream,
                     )
                 except Exception:
+                    joining_chats.discard(chat_id)
                     raise AssistantErr(
                         f"**» ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ ғᴏᴜɴᴅ.**\n\nᴩʟᴇᴀsᴇ ᴍᴀᴋᴇ sᴜʀᴇ ʏᴏᴜ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ."
                     )
 
         except AlreadyJoinedError:
+            joining_chats.discard(chat_id)
             raise AssistantErr(
                 "**ᴀssɪsᴛᴀɴᴛ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ**\n\nᴍᴜsɪᴄ ʙᴏᴛ sʏsᴛᴇᴍs ᴅᴇᴛᴇᴄᴛᴇᴅ ᴛʜᴀᴛ ᴀssɪᴛᴀɴᴛ ɪs ᴀʟʀᴇᴀᴅʏ ɪɴ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ, ɪғ ᴛʜɪs ᴩʀᴏʙʟᴇᴍ ᴄᴏɴᴛɪɴᴜᴇs ʀᴇsᴛᴀʀᴛ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ ᴀɴᴅ ᴛʀʏ ᴀɢᴀɪɴ."
             )
         except TelegramServerError:
+            joining_chats.discard(chat_id)
             raise AssistantErr(
                 "**ᴛᴇʟᴇɢʀᴀᴍ sᴇʀᴠᴇʀ ᴇʀʀᴏʀ**\n\nᴩʟᴇᴀsᴇ ᴛᴜʀɴ ᴏғғ ᴀɴᴅ ʀᴇsᴛᴀʀᴛ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ ᴀɢᴀɪɴ."
             )
+        finally:
+            # Join complete — ab on_left events phir se allow karo (2 sec baad)
+            await asyncio.sleep(2)
+            joining_chats.discard(chat_id)
         await add_active_chat(chat_id)
         await music_on(chat_id)
         if video:
@@ -801,6 +812,13 @@ class Call(PyTgCalls):
         @self.four.on_left()
         @self.five.on_left()
         async def stream_services_handler(_, chat_id: int):
+            # Agar yeh chat abhi join ho rahi hai toh on_left/on_kicked ignore karo
+            # (pytgcalls join ke waqt spurious left event deta hai)
+            if chat_id in joining_chats:
+                return
+            # Agar is chat mein koi active song nahi hai toh bhi kuch nahi karna
+            if not db.get(chat_id):
+                return
             await self.stop_stream(chat_id)
 
         @self.one.on_stream_end()
