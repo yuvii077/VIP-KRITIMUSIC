@@ -23,7 +23,8 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     Message,
 )
-from strings import get_command, get_string, helpers
+from strings import get_command, get_string
+from strings import helpers
 from VIPMUSIC import HELPABLE, app
 from VIPMUSIC.utils.database import get_lang, is_commanddelete_on
 from VIPMUSIC.utils.decorators.language import LanguageStart, languageCB
@@ -36,7 +37,7 @@ HELP_COMMAND = get_command("HELP_COMMAND")
 COLUMN_SIZE: int = 4
 NUM_COLUMNS: int = 3
 
-DONATE_IMG: str = "https://files.catbox.moe/vg0x0k.jpg"
+DONATE_IMG: str = "https://envs.sh/AeS.jpg"
 
 # ─────────────────────────── Helpers ──────────────────────────────────────────
 
@@ -242,7 +243,7 @@ async def help_button(client: Client, query: CallbackQuery) -> None:
 _HELP_SECTION_TEXT = (
     "**ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ ʙᴜᴛᴛᴏɴs ʙᴇʟᴏᴡ ғᴏʀ ᴍᴏʀᴇ ɪɴғᴏʀᴍᴀᴛɪᴏɴ. "
     "ɪғ ʏᴏᴜ'ʀᴇ ғᴀᴄɪɴɢ ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ʏᴏᴜ ᴄᴀɴ ᴀsᴋ ɪɴ "
-    "[sᴜᴘᴘᴏʀᴛ ᴄʜᴀᴛ.](https://t.me/+w00BnR_Z_rA5NTY1)**\n\n"
+    "[sᴜᴘᴘᴏʀᴛ ᴄʜᴀᴛ.](t.me/tg_friendsss)**\n\n"
     "**ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ: /**"
 )
 
@@ -504,8 +505,8 @@ async def developer_callback(client: Client, callback_query: CallbackQuery) -> N
             InlineKeyboardButton("📍 sᴜᴅᴏᴇʀs 📍", url=f"https://t.me/{app.username}?start=sudo"),
         ],
         [
-            InlineKeyboardButton("🎁 ɪɴsᴛᴀ 🎁",    url="https://instagram.com/god_hyper_op"),
-            InlineKeyboardButton("💲 ʏᴏᴜᴛᴜʙᴇ 💲",  url="https://youtube.com/@hyper_trading_official?si=WXsbAujrK7VsMv4L"),
+            InlineKeyboardButton("🎁 ɪɴsᴛᴀ 🎁",    url="https://instagram.com/the.vip.boy"),
+            InlineKeyboardButton("💲 ʏᴏᴜᴛᴜʙᴇ 💲",  url="https://youtube.com/@THE_VIP_BOY"),
         ],
         [InlineKeyboardButton("🔙 ʙᴀᴄᴋ", callback_data="about")],
     ]
@@ -527,7 +528,7 @@ async def support_callback(client: Client, callback_query: CallbackQuery) -> Non
     keyboard = [
         [
             InlineKeyboardButton("🎭 ᴏᴡɴᴇʀ 🎭",   user_id=config.OWNER_ID[0]),
-            InlineKeyboardButton("🌱 ɢɪᴛʜᴜʙ 🌱",  url="https://github.com/KIRU-OP/VIP-MUSIC"),
+            InlineKeyboardButton("🌱 ɢɪᴛʜᴜʙ 🌱",  url="https://github.com/THE-VIP-BOY-OP"),
         ],
         [
             InlineKeyboardButton("⛅ ɢʀᴏᴜᴘ ⛅",   url=config.SUPPORT_GROUP),
