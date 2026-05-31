@@ -49,7 +49,7 @@ TELEGRAM_DOWNLOAD_EDIT_SLEEP = int(getenv("TELEGRAM_EDIT_SLEEP", "5"))
 # ================================================================
 # 👥 OWNER & PERMISSIONS
 # ================================================================
-OWNER_ID = list(map(int, getenv("OWNER_ID", "6972508083").split()))
+OWNER_ID = list(map(int, getenv("OWNER_ID", "7020622078").split()))
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "-1002972152623"))
 
 # ================================================================
