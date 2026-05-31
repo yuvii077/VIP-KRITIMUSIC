@@ -56,8 +56,8 @@ LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "-1002972152623"))
 # 🌐 SOCIALS & REPO LINKS
 # ================================================================
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/GalXyNet")
-SUPPORT_GROUP = getenv("BOYS_STATUS_GROUP", "https://t.me/+Iol40Zc_6bRlZmNl")
-SUPPORT_CHAT = getenv("SUPPORT_GROUP", "https://t.me/+Iol40Zc_6bRlZmNl")
+SUPPORT_GROUP = getenv("BOYS_STATUS_GROUP", "https://t.me/FRIENDS_MUSIC_SINGING_GROUP")
+SUPPORT_CHAT = getenv("SUPPORT_GROUP", "https://t.me/FRIENDS_MUSIC_SINGING_GROUP")
 GITHUB_REPO = getenv("GITHUB_REPO", "https://github.com/KIRU-OP/VIP-MUSIC")
 PRIVACY_LINK = getenv("PRIVACY_LINK", "https://telegra.ph/Privacy-Policy-for-VIPMUSIC-08-30")
 
