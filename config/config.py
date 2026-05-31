@@ -50,12 +50,12 @@ TELEGRAM_DOWNLOAD_EDIT_SLEEP = int(getenv("TELEGRAM_EDIT_SLEEP", "5"))
 # 👥 OWNER & PERMISSIONS
 # ================================================================
 OWNER_ID = list(map(int, getenv("OWNER_ID", "6972508083").split()))
-LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "-1002223516578"))
+LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "-1002972152623"))
 
 # ================================================================
 # 🌐 SOCIALS & REPO LINKS
 # ================================================================
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/about_deadly_venom")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/GalXyNet")
 SUPPORT_GROUP = getenv("BOYS_STATUS_GROUP", "https://t.me/+Iol40Zc_6bRlZmNl")
 SUPPORT_CHAT = getenv("SUPPORT_GROUP", "https://t.me/+Iol40Zc_6bRlZmNl")
 GITHUB_REPO = getenv("GITHUB_REPO", "https://github.com/KIRU-OP/VIP-MUSIC")
