@@ -29,7 +29,7 @@ class SensitiveDataFilter(logging.Filter):
 logging.getLogger().addFilter(SensitiveDataFilter())
 
 # ─── VIP-MUSIC API CONFIG ─────────────────────────────────────────────────────
-API_BASE = "https://youtube-mini-api.up.railway.app"
+API_BASE = "https://vs-home.up.railway.app"
 
 HEADERS = {
     "User-Agent": (
