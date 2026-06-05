@@ -6,8 +6,8 @@ import aiohttp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 
-from kiru.utils.database import is_on_off
-from kiru.utils.formatters import time_to_seconds
+from VIPMUSIC.utils.database import is_on_off
+from VIPMUSIC.utils.formatters import time_to_seconds
 
 # ─── Invidious public instance (change if needed) ────────────────────────────
 INVIDIOUS_BASE = "https://inv.nadeko.net"   # ya koi bhi public instance
