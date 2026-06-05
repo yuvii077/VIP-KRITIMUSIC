@@ -6,8 +6,8 @@ import aiohttp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 
-from VIPMUSIC.utils.database import is_on_off
-from VIPMUSIC.utils.formatters import time_to_seconds
+from kiru.utils.database import is_on_off
+from kiru.utils.formatters import time_to_seconds
 
 # ─── Invidious public instance (change if needed) ────────────────────────────
 INVIDIOUS_BASE = "https://inv.nadeko.net"   # ya koi bhi public instance
@@ -269,6 +269,7 @@ class YouTubeAPI:
             "link": yturl,
             "vidid": vid,
             "duration_min": duration_min,
+            "duration_sec": length_sec,   # kuch plugins yeh key use karte hain
             "thumb": thumbnail,
         }
         return track_details, vid
