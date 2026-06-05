@@ -219,14 +219,20 @@ async def play_commnd(
                 cap = _["play_10"]
             elif "https://youtu.be" in url:
                 videoid = url.split("/")[-1].split("?")[0]
-                details, track_id = await YouTube.track(
-                    f"https://www.youtube.com/watch?v={videoid}"
-                )
+                try:
+                    details, track_id = await YouTube.track(
+                        f"https://www.youtube.com/watch?v={videoid}"
+                    )
+                except Exception as e:
+                    print(e)
+                    return await mystic.edit_text(_["play_3"])
+                if not details.get("title"):
+                    return await mystic.edit_text(_["play_3"])
                 streamtype = "youtube"
                 img = details["thumb"]
                 cap = _["play_11"].format(
                     details["title"],
-                    details["duration_min"],
+                    details["duration_min"] or "Live",
                 )
             else:
                 try:
@@ -234,11 +240,13 @@ async def play_commnd(
                 except Exception as e:
                     print(e)
                     return await mystic.edit_text(_["play_3"])
+                if not details.get("title"):
+                    return await mystic.edit_text(_["play_3"])
                 streamtype = "youtube"
                 img = details["thumb"]
                 cap = _["play_11"].format(
                     details["title"],
-                    details["duration_min"],
+                    details["duration_min"] or "Live",
                 )
         elif await Spotify.valid(url):
             spotify = True
@@ -253,7 +261,7 @@ async def play_commnd(
                     return await mystic.edit_text(_["play_3"])
                 streamtype = "youtube"
                 img = details["thumb"]
-                cap = _["play_11"].format(details["title"], details["duration_min"])
+                cap = _["play_11"].format(details["title"], details.get("duration_min") or "Live")
             elif "playlist" in url:
                 try:
                     details, plist_id = await Spotify.playlist(url)
@@ -291,7 +299,7 @@ async def play_commnd(
                     return await mystic.edit_text(_["play_3"])
                 streamtype = "youtube"
                 img = details["thumb"]
-                cap = _["play_11"].format(details["title"], details["duration_min"])
+                cap = _["play_11"].format(details["title"], details.get("duration_min") or "Live")
             elif "playlist" in url:
                 spotify = True
                 try:
@@ -314,7 +322,7 @@ async def play_commnd(
                 return await mystic.edit_text(_["play_3"])
             streamtype = "youtube"
             img = details["thumb"]
-            cap = _["play_11"].format(details["title"], details["duration_min"])
+            cap = _["play_11"].format(details["title"], details.get("duration_min") or "Live")
         elif await SoundCloud.valid(url):
             try:
                 details, track_path = await SoundCloud.download(url)
@@ -396,10 +404,12 @@ async def play_commnd(
             details, track_id = await YouTube.track(query)
         except Exception:
             return await mystic.edit_text(_["play_3"])
+        if not details.get("title"):
+            return await mystic.edit_text(_["play_3"])
         streamtype = "youtube"
     if str(playmode) == "Direct":
         if not plist_type:
-            if details["duration_min"]:
+            if details.get("duration_min"):
                 duration_sec = time_to_seconds(details["duration_min"])
                 if duration_sec > config.DURATION_LIMIT:
                     return await mystic.edit_text(
@@ -481,7 +491,7 @@ async def play_commnd(
                     photo=details["thumb"],
                     caption=_["play_11"].format(
                         details["title"].title(),
-                        details["duration_min"],
+                        details.get("duration_min") or "Live",
                     ),
                     reply_markup=InlineKeyboardMarkup(buttons),
                 )
@@ -531,7 +541,7 @@ async def play_music(client, CallbackQuery, _):
         details, track_id = await YouTube.track(vidid, True)
     except Exception:
         return await mystic.edit_text(_["play_3"])
-    if details["duration_min"]:
+    if details.get("duration_min"):
         duration_sec = time_to_seconds(details["duration_min"])
         if duration_sec > config.DURATION_LIMIT:
             return await mystic.edit_text(
