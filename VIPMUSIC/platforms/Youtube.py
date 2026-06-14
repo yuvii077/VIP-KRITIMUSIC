@@ -29,7 +29,7 @@ class SensitiveDataFilter(logging.Filter):
 logging.getLogger().addFilter(SensitiveDataFilter())
 
 # ─── VIP-MUSIC API CONFIG ─────────────────────────────────────────────────────
-API_BASE = "https://video-search-engine--shivam433533.replit.app/"
+API_BASE = "https://video-search-engine--shivam433533.replit.app"
 
 HEADERS = {
     "User-Agent": (
@@ -38,6 +38,7 @@ HEADERS = {
         "Chrome/124.0.0.0 Safari/537.36"
     ),
     "Accept": "application/json",
+    "X-API-Key": "ShrutiBotsQbOyHeaRXE3wXJKvCXJL"
 }
 
 # ─── DURATION PARSER ──────────────────────────────────────────────────────────
